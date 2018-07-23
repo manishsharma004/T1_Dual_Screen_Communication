@@ -1,44 +1,47 @@
-# T1双屏通信
+# T1 dual screen communication
 
-## 商米T1有两种双屏配置：
+## Shangmi T1 has two dual screen configurations：
 
-1 . 主屏14寸，副屏7寸。
+1. The main screen is 14 inches and the secondary screen is 7 inches.
 
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/1.png) 
 
 
-2 .主屏14寸，副屏14寸。
+2. The main screen is 14 inches and the secondary screen is 14 inches.
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/2.png) 
 
 
-主副屏运行的都是SUNMIUI系统，通过上商米封装好的接口完成T1双屏通讯。
+The main and secondary screens are all running SUNMIUI system, and T1 dual-screen communication is completed through the interface packaged by Shangmi.
 
-## 关于商米T1副屏内置显示程序
+## About the business meter T1 sub screen built-in display program
 
-通常开发者的业务app运行在主屏，同时需要副屏显示清单信息、宣传图片、宣传幻灯片、宣传视频等内容。开发者有两种方式使用T1副屏显示内容：
+Usually the developer's business app runs on the main screen, and the secondary screen needs to display list information, promotional pictures, publicity slides, promotional videos and other content. Developers have two ways to display content using the T1 subscreen:
 
-1 商米在T1副屏系统中内置了1个显示程序(以下简称'副显程序')，主屏的app遵照商米统一的规范，向副显程序发特定格式的数据，就可以让副显程序显示内容。（开发成本低，推荐）。
-2 开发者自己开发副屏显示app（开发成本高，不推荐）。
-## 如何使用商米副显程序
-商米规定了副显程序能显示的布局，开发者修改自己的主屏app的代码，向副显程序传递相关格式的数据即可。
+1 Shangmi has a display program built in the T1 sub-screen system (hereinafter referred to as 'sub-display program'). The app of the main screen complies with the unified specifications of Shangmi, and sends data of a specific format to the sub-display program. The program displays the content. (development costs are low, recommended).
+2 Developers develop their own screen display app (high development cost, not recommended).
+## How to use the Shangmi sub-display program
+The quotient specifies the layout that the sub-display program can display. The developer modifies the code of the main screen app and transmits the data of the relevant format to the sub-display program.
 
-下面将按照如下三段讲解如何使用副显程序：
-一. 初始化配置。
-二 .7寸屏的3种布局和传递数据的代码。
-三 .14寸屏的7种布局和传递数据的代码。
+The following three paragraphs will explain how to use the sub-display program:
+I. Initialize the configuration.
+Two. 7-inch screen layout and code passing data.
+Three. 14 layouts of the 14-inch screen and code to pass data.
 
-### 一.初始化配置
+### I. Initial configuration
 
-操作7寸和操作14寸的初始化流程一样，请下载资源文件，参照Demo项目，直接将jar包导入到主屏app项目中或在Android Studio的app module下的build.gradle文件中声明。
+To operate the 7-inch and 14-inch initialization process, please download the resource file, refer to the Demo project, and directly import the jar package into the main screen app project or declare it in the build.gradle file under the Android Studio app module.
+
 ```
 dependencies {
     compile 'com.sunmi:DS_Lib:1.0.2'
     compile 'com.google.code.gson:gson:2.6.2'//gson任意版本
 }
 ```
-在清单文件AndroidMainfest.xml的<application>节点下配置以下声明：
+
+Configure the following statement under the <application> node of the manifest file AndroidMainfest.xml:
+
 ```
 <application>
   ....
@@ -53,46 +56,45 @@ dependencies {
   ```
   
   
-在适当的地方初始化SDK代码如下，可以参考Demo中的代码，
+Initialize the SDK code in the appropriate place as follows, you can refer to the code in the Demo.
+
 ``` 
 DSKernel mDSKernel =DSKernel.newInstance();
 mDSKernel.init(context, mConnCallback);
 mDSKernel.addReceiveCallback(mReceiveCallback); 
 ```
 
-注：主副屏通信相关的接口请看资源文件中的T1双屏通信接口文档，副屏客显操作指令工具包见Demo：sunmi.ds.data中的代码是对操作副屏客显指令的封装也就是框架图中的APP协议层。
+Note: For the interface related to the main and secondary screen communication, please refer to the T1 dual-screen communication interface document in the resource file. The sub-screen guest display operation instruction kit sees the code in Demo:sunmi.ds.data for the operation of the sub-screen display command. The encapsulation is also the APP protocol layer in the framework diagram.
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/3.jpg) 
 
-完成了以上的操作，就可以向副屏发送数据了，以下分别讲解7寸屏和14寸屏的显示布局和各布局下要传递的数据格式。
+After completing the above operations, you can send data to the secondary screen. The following explains the display layout of the 7-inch screen and the 14-inch screen and the data format to be transmitted under each layout.
 
-### 二、7寸副显程序能显示以下三种布局
-1.全屏显示单张图片
-2.全屏只显示简单文字
-3.在屏幕部分区域显示图片+文字
+### Two, 7-inch sub-display program can display the following three layouts
+1. Full screen display of a single picture
+2. Full screen only shows simple text
+3. Display image + text in the partial area of the screen
 
-以下讲解7寸屏副显程序显示各个布局时，主屏app需要向副显程序传递的数据内容：
+The following explains the data content that the main screen app needs to pass to the sub-display program when the 7-inch screen sub-display program displays each layout:
 
-#### 1.全屏显示主屏指定的图片(7寸屏)
-效果图如下所示：
-
+#### 1. Full screen display of the specified picture on the main screen (7-inch screen)
+The effect diagram is as follows:
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/4.jpg) 
 
-要显示以上布局，只要调用DSKernel的sendFile方法向副显程序发一张图片即可。建议图片分辨率1024*600，或者相应长宽比的图片，否则将被缩放，图片是即时传即时显示的，并会被缓存起来重复使用，也就是说，理论上可以不用每次向副显程序传递图片。
+To display the above layout, just call DSKernel's sendFile method to send a picture to the sub-display program. It is recommended that the picture resolution be 1024*600, or the corresponding aspect ratio picture, otherwise it will be zoomed, the picture is instantly displayed in real time, and will be cached and reused. That is to say, theoretically, it is not necessary to use it every time. The program passes the picture.
 
-可以参加见Demo中关于7寸副显相关的代码：
+You can participate in the demo about the 7-inch sub-display related code:
 
-发数据时代码如下：
-```
-String filePath = "xxx/img.png";//这个是要显示的图片的本地路径
-//通过DSKernel的sendFile发送文件的方法向副显程序发图片
+The code when sending data is as follows:```
+String filePath = "xxx/img.png"; // This is the local path of the image to be displayed
+ // Send a file to the sub-display program by sending a file to the sendFile of DSKernel
 mDSKernel.sendFile(DSKernel.getDSDPackageName(), filePath, new ISendCallback(){
     public void onSendSuccess(long l) {
-    //发送成功的回调，参数long l为文件在副屏的唯一表示符，开发者可以将该字段保存在本地，下次可以通过该字段查询该文件在副显程序中是否存在。
+    // A successful callback is sent. The parameter long l is the unique identifier of the file on the secondary screen. The developer can save the field locally. The next time, the field can be used to query whether the file exists in the secondary display program.
        showImg(fileId);//发送命令，让副屏显示图片
     }
     public void onSendFail(int i, String s) {
-    //发送失败的回调
+    //Send failed callback
     }
     public void onSendProcess(long l, long l1) {
     //发送状态的回调
@@ -140,9 +142,9 @@ DataPacket packet = UPacketFactory.buildShowText(
 mDSKernel.sendData(packet);//调用sendData方法发送文本
 ```
 
-#### 3.在屏幕部分区域显示图片+文字(7寸屏)
+#### 3. Display picture + text (7-inch screen) in the screen area
 
-布局格式也是商米规定好的，目前商米建议7寸屏的该种布局用来显示如下的信息：图片为二维码，右边的文字只有标题和内容两行。
+The layout format is also stipulated by the quotient. Currently, this layout of the 7-inch screen is recommended to display the following information: the picture is a two-dimensional code, and the text on the right has only two lines of title and content.
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg) 
 
@@ -171,23 +173,23 @@ private void showQRCode(long fileId) {
       mDSKernel.sendCMD(DSKernel.getDSDPackageName(), json, fileId, null);
 ```
     
-### 三、14寸副显app能显示以下7种布局
+### Three, 14-inch sub-display app can display the following 7 layouts
 
-1. 全屏只显示复杂的表格字符数据
-2. 屏幕左边显示图片，右边显示复杂的表格数据
-3. 屏幕左边显示幻灯片，右边显示复杂的表格数据
-4. 屏幕左边显示视频，右边显示复杂的表格数据
-5. 全屏显示单张图片
-6. 全屏显示幻灯片
-7. 全屏显示视频
+1. Full screen display only complex table character data
+2. The picture is displayed on the left side of the screen and the complex table data is displayed on the right side.
+3. The slide is displayed on the left side of the screen and the complex table data is displayed on the right side.
+4. The video is displayed on the left side of the screen and the complex table data is displayed on the right side.
+5. Display a single picture in full screen
+6. Full screen slideshow
+7. Full screen video
 
-以下讲解14寸屏副显程序显示各个布局时，主屏app需要向副显程序传递的数据内容：
+The following explains the data content that the main screen app needs to pass to the sub-display program when the 14-inch screen sub-display program displays each layout:
 
-#### 1.全屏只显示复杂的表格字符数据(14寸屏)
+#### 1. Full screen only displays complex table character data (14-inch screen)
 
-全屏显示表格数据，该显示布局固定三个显示区域：标题区，清单区，结算区。标题区只能显示一串字符；清单区域会显示一个表格，可以显示1到8列字段，行数不限制，但是超过屏幕能显示的行，将自动滚动到最下面的行；结算区域可以显示1到8个字段。格式是商米固定的，但是字段标题和数据内容是主屏app传递的。
+The table data is displayed in full screen, and the display layout is fixed with three display areas: a title area, a list area, and a settlement area. The title area can only display a string of characters; the list area will display a table, which can display 1 to 8 column fields, the number of lines is not limited, but the line that can be displayed beyond the screen will automatically scroll to the bottom line; the settlement area can be displayed. 1 to 8 fields. The format is fixed by the quotient, but the field title and data content are passed by the main screen app.
 
-效果图如下：
+The effect chart is as follows:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg) 
 
@@ -205,7 +207,7 @@ DataPacket pack = buildPack(receiverPackageName, DataType.DATA, DataModel.TEXT, 
 mDSKernel.sendData(pack);
 ```
 
-上面的jsonStr的数据格式如下框所示，请开发者参照如下的格式生成JSON格式的数据.其中title定义标题区显示的内容，head定义清单区中的字段标题，请按参照Demo生成相应的数据，请注意对应的字段个数符合规范，以下字符的key值：title，head，list，KVPlist，name，value是固定的写法，param1,param2...param8是顺序递增的，如果格式不对，将无法显示效果。
+The data format of jsonStr above is shown in the following box. Please ask the developer to generate data in JSON format by referring to the following format. The title defines the content displayed in the title area, and the head defines the field title in the list area. Please generate the corresponding data according to the reference demo. Please note that the corresponding number of fields conforms to the specification. The key values of the following characters: title, head, list, KVPlist, name, value are fixed words, param1, param2...param8 are sequentially incremented, if the format is incorrect, Unable to display the effect.
 
 ```
 {
@@ -254,26 +256,26 @@ mDSKernel.sendData(pack);
         ]
 }
 
-数据格式说明：
-1:title字段为标题
-2:head字段是表头字段
-3:list是商品列表，表头和表的字段数量要一致 
-4:KVPList为结算键值对列表
+Data format description:
+1: title field is the title
+2: the head field is the header field
+3: list is the list of products, the number of fields in the header and table should be the same
+4: KVPList is a list of settlement key-value pairs
 
-规则:
-当只显示购物清单时：head的params赋值个数最小1个最大8个;list中每个元素的params赋值个数最小1个最大8个；KVPList的size最小1个最大8个。
+rule:
+When only the shopping list is displayed: the number of params assigned to the head is a minimum of 1 and a maximum of 8; the number of params assigned to each element in the list is a minimum of 1 and a maximum of 8; the size of the KVPList is a minimum of 1 and a maximum of 8.
 
 ```
 
-#### 2.屏幕左边显示图片，右边显示复杂的表格数据(14寸屏)
+#### 2. The picture on the left of the screen is displayed, and the complex table data is displayed on the right (14-inch screen)
 
-左边区域显示图片,建议的图片大小为1186*1080；右边区域显示复杂的表格数据，同样也分三个显示区：标题区，清单区，结算区。标题区只能显示一串字符；清单区域会显示一个表格，最多显示4列字段，超过屏幕范围的行数据可滚动显示；结算区域可以显示1到4个字段。
+The left area shows the picture, the recommended picture size is 1186*1080; the right area shows complex table data, which is also divided into three display areas: title area, list area, and settlement area. The title area can only display a string of characters; the list area will display a table with up to 4 columns of fields, and the line data beyond the screen range can be scrolled; the settlement area can display 1 to 4 fields.
 
-效果图：
+Effect chart:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg) 
 
-代码如下：
+code show as below:
 
 ```
 String filePath = "xxx/img.png";//显示的图片路径
@@ -292,7 +294,7 @@ void show(long fileId, String jsonStr){
 
 ```
 
-上面的jsonStr的数据格式如下框所示，请开发者参照如下的格式生成JSON格式的数据，其中title定义标题区显示的内容，head定义清单区中的字段标题，请按参照Demo生成相应的数据，请注意对应的字段个数符合规范，以下字符的key值：title，head，list，KVPlist，name，value是固定的写法，param1,param2...param4是顺序递增的。
+The data format of jsonStr above is shown in the following box. Please ask the developer to generate data in JSON format by referring to the following format. The title defines the content displayed in the title area, and the head defines the field title in the list area. Please generate the corresponding data according to the reference Demo. Please note that the corresponding number of fields conforms to the specification. The key values of the following characters: title, head, list, KVPlist, name, and value are fixed words, and param1, param2...param4 are sequentially incremented.
 
 ```
 {
@@ -340,23 +342,23 @@ void show(long fileId, String jsonStr){
         ]
 }
 
-JSON数据格式说明：
-1:title字段为标题
-2:head字段是表头字段
-3:list是商品列表，表头和表的字段数量要一致 
-4:KVPList为结算键值对列表
+JSON data format description:
+1: title field is the title
+2: the head field is the header field
+3: list is the list of products, the number of fields in the header and table should be the same
+4: KVPList is a list of settlement key-value pairs
 
-规则:
-当显示图文混合时：head的params赋值个数最小1个最大4个;list中每个元素的params赋值个数最小1个最大4个；KVPList的size最小1个最大4个。
+rule:
+When displaying the picture and text mixture: the number of params assigned to the head is at least 1 and the maximum is 4; the number of params assigned to each element in the list is at least 1 and the maximum is 4; the size of the KVPList is at least 1 and the maximum is 4.
 
 ```
 
-#### 3.屏幕左边显示幻灯片，右边显示复杂的表格数据(14寸屏)
+#### 3. The slide is displayed on the left side of the screen, and the complex table data is displayed on the right side (14-inch screen)
 
-左边区域显示幻灯片,建议的图片大小为1186*1080；右边区域显示复杂的表格数据，同样也分三个显示区：标题区，清单区，结算区。标题区只能显示一串字符；清单区域会显示一个表格，最多显示4列字段，超过屏幕范围的行数据可滚动显示；结算区域可以显示1到4个字段。
+The left area shows the slideshow. The recommended image size is 1186*1080. The right area shows complex table data, which is also divided into three display areas: title area, list area, and settlement area. The title area can only display a string of characters; the list area will display a table with up to 4 columns of fields, and the line data beyond the screen range can be scrolled; the settlement area can display 1 to 4 fields.
 
 
-效果图：
+Effect chart:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg) 
 
@@ -390,14 +392,14 @@ mDSKernel.sendFiles(DSKernel.getDSDPackageName(), "", paths, new ISendFilesCallb
         mDSKernel.sendCMD(DSKernel.getDSDPackageName(), jsonStr, fileId,null);
     }
 ```
-上面的jsonStr的数据格式规则和布局2中的规则一样，在此不做赘述。
+The data format rules of jsonStr above are the same as those in layout 2, and will not be described here.
 
-#### 4.屏幕左边显示视频，右边显示复杂的表格数据
+#### 4. The video is displayed on the left side of the screen, and the complex table data is displayed on the right side.
 
 
-左边区域显示视频，建议的分辨率大小为1186*1080；右边区域显示复杂的表格数据，同样也分三个显示区：标题区，清单区，结算区。标题区只能显示一串字符；清单区域会显示一个表格，最多显示4列字段，超过屏幕范围的行数据可滚动显示；结算区域可以显示1到4个字段。
+The left area shows the video, the recommended resolution is 1186*1080; the right area shows complex table data, which is also divided into three display areas: title area, list area, and settlement area. The title area can only display a string of characters; the list area will display a table with up to 4 columns of fields, and the line data beyond the screen range can be scrolled; the settlement area can display 1 to 4 fields.
 
-效果图：
+Effect chart:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg)
 
@@ -417,13 +419,15 @@ void show(long fileId, String jsonStr){
 }
 ```
 
-上面的jsonStr的数据格式规则和布局2中的规则一样，在此不做赘述。
-#### 5.全屏显示单张图片(14寸屏)
+The data format rules of jsonStr above are the same as those in layout 2, and will not be described here.
+#### 5. Full-screen display of a single picture (14-inch screen)
 
-效果图：
+Effect chart:
+
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg)
 
-和7寸屏的写法类似，先发送图片，发送成功后，在回调里面发送控制指令显示图片，代码如下：
+Similar to the 7-inch screen, the picture is sent first. After the transmission is successful, the control command is displayed in the callback to display the picture. The code is as follows:
+
 ```
 String filePath = "/sdcard/img.png";
 mDSKernel.sendFile(DSKernel.getDSDPackageName(), filePath, new ISendCallback(){
@@ -440,14 +444,15 @@ void showImg(long fileId){
 }
 ```
 
-#### 6.全屏显示视频(14寸屏)
+#### 6. Full screen display video (14 inch screen)
 
-效果图：
+Effect chart:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg)
 
 
-第一次显示视频的时候，传递的过程可能会很长，开发者应该在适当的时候先将视频传递给副显程序，副显程序将缓存视频，代码如下：
+When the video is displayed for the first time, the process of passing the video may be very long. The developer should first pass the video to the sub-display program at the appropriate time. The sub-display program will cache the video. The code is as follows:
+
 ```
 String filePath = "/sdcard/onepiece.mp4";
 mDSKernel.sendFile(DSKernel.getDSDPackageName(), filePath, new ISendCallback(){
@@ -464,14 +469,14 @@ void playVideo(long fileId){
 }
 ```
     
-#### 7.全屏显示幻灯片(14寸屏)
+#### 7. Full screen display slideshow (14-inch screen)
 
-效果图如下：
+The effect chart is as follows:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg)
 
 
-开发者需要准备好多张图片，调用sendFiles方法传递多张图片的路径给副显程序，幻灯片的默认切换时间是10秒，主屏app可以通过传递参数改变时间，详情请参考如下代码
+The developer needs to prepare multiple images, call the sendFiles method to pass the path of multiple images to the sub-display program. The default switching time of the slide is 10 seconds. The main screen app can change the time by passing parameters. For details, please refer to the following code.
 
 ```
 JSONObject json = new JSONObject();
@@ -496,5 +501,5 @@ private void show(long fileId) {
 }
 ```
 
-补充说明：
-以上为商米T1内置显示程序目前支持的布局，更多的布局将在后续添加，开发者也可以自己开发适配商米T1的副显程序。
+Additional instructions:
+The above is the layout currently supported by the Shangmi T1 built-in display program. More layouts will be added later, and developers can also develop sub-display programs that adapt to the merchant T1.
