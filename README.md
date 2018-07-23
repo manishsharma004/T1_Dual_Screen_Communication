@@ -19,8 +19,9 @@ The main and secondary screens are all running SUNMIUI system, and T1 dual-scree
 
 Usually the developer's business app runs on the main screen, and the secondary screen needs to display list information, promotional pictures, publicity slides, promotional videos and other content. Developers have two ways to display content using the T1 subscreen:
 
-1 Shangmi has a display program built in the T1 sub-screen system (hereinafter referred to as 'sub-display program'). The app of the main screen complies with the unified specifications of Shangmi, and sends data of a specific format to the sub-display program. The program displays the content. (development costs are low, recommended).
-2 Developers develop their own screen display app (high development cost, not recommended).
+1. Shangmi has a display program built in the T1 sub-screen system (hereinafter referred to as 'sub-display program'). The app of the main screen complies with the unified specifications of Shangmi, and sends data of a specific format to the sub-display program. The program displays the content. (development costs are low, recommended).
+2. Developers develop their own screen display app (high development cost, not recommended).
+
 ## How to use the Shangmi sub-display program
 The quotient specifies the layout that the sub-display program can display. The developer modifies the code of the main screen app and transmits the data of the relevant format to the sub-display program.
 
@@ -85,7 +86,9 @@ To display the above layout, just call DSKernel's sendFile method to send a pict
 
 You can participate in the demo about the 7-inch sub-display related code:
 
-The code when sending data is as follows:```
+The code when sending data is as follows:
+
+```
 String filePath = "xxx/img.png"; // This is the local path of the image to be displayed
  // Send a file to the sub-display program by sending a file to the sendFile of DSKernel
 mDSKernel.sendFile(DSKernel.getDSDPackageName(), filePath, new ISendCallback(){
@@ -106,10 +109,11 @@ void showImg(long fileId){
     mDSKernel.sendCMD(DSKernel.getDSDPackageName(), json, fileId, null);//该命令会让副屏显示图片
 }
 ```
-注意：在所有要发送文件(图片，视频)的地方，建议开发者在发送文件之前调用DSKernel.checkFileExist(long fileId, final ICheckFileCallback callback)检查该文件在副屏是否有缓存，如果有该文件，则可以不用重复传递。检查的代码如下：
+
+Note: In all places where you want to send files (pictures, videos), it is recommended that the developer call DSKernel.checkFileExist(long fileId, final ICheckFileCallback callback) before sending the file to check whether the file has a cache on the secondary screen. If there is any file, then You don't have to repeat it. The code to check is as follows:
 
 ```
-//说明：该方法检查fileId对应的文件在副屏是否存在，第一个参数为之前发送文件时副屏返回的文件id，该id是所有的文件唯一的，第二个参数为结果回调
+// Description: This method checks whether the file corresponding to the fileId exists on the secondary screen. The first parameter is the file id returned by the secondary screen when the file is sent before. The id is unique for all files, and the second parameter is the result callback.
 mDSKernel.checkFileExist(fileId, new ICheckFileCallback(){
      @Override
      public void onCheckFail() {}
@@ -121,11 +125,11 @@ mDSKernel.checkFileExist(fileId, new ICheckFileCallback(){
          }                                    
     });
 ```
-#### 2.全屏只显示简单文字(7寸屏)
+#### 2. Full screen only displays simple text (7-inch screen)
 
-显示标题和内容两行字符，布局格式是商米规定好的，主屏app只要向副显程序发送json格式的数据即可。
+Display the two lines of characters in the title and content. The layout format is stipulated by the quotient. The main screen app only needs to send the data in the json format to the sub-display program.
 
-效果图如下：
+The effect chart is as follows:
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/5.jpg) 
 
@@ -148,17 +152,17 @@ The layout format is also stipulated by the quotient. Currently, this layout of 
 
 ![Alt SUNMI](https://github.com/sunmideveloper/T1_Dual_Screen_Communication/blob/master/image/7.jpg) 
 
-发数据代码如下：
+The data code is as follows:
 
 ```
 JSONObject json = new JSONObject();
-json.put("title", title);//title为上面一行的标题内容
-json.put("content", content);//content为下面一行的内容
+json.put("title", title);//Title is the title content of the above line
+json.put("content", content);//Content is the content of the following line
 String titleContentJsonStr= json.toString();
  mDSKernel.sendFile(DSKernel.getDSDPackageName(), titleContentJsonStr,filePath, new ISendCallback() {
     @Override
     public void onSendSuccess(long fileId) {
-        showQRCode(fileId);//二维码图片发送
+        showQRCode(fileId);//QR code image transmission
     }
     public void onSendFail(int i, String s) {
       //错误回调
@@ -197,11 +201,11 @@ The effect chart is as follows:
 
 ```
 /**
-*receiverPackageName 接收数据的副屏显示app的包名DataType.DATA 
-*DataType.DATA 
-*DataModel.TEXT 
-*jsonStr 显示的数据内容,具体格式参见下面的框
-*callback 回调
+*receiverPackageName The secondary screen that receives the data shows the app's package name DataType.DATA
+*DataType.DATA
+*DataModel.TEXT
+*jsonStr shows the data content, see the box below for the specific format.
+*callback callback
 */
 DataPacket pack = buildPack(receiverPackageName, DataType.DATA, DataModel.TEXT, jsonStr, callback);//
 mDSKernel.sendData(pack);
@@ -278,7 +282,7 @@ Effect chart:
 code show as below:
 
 ```
-String filePath = "xxx/img.png";//显示的图片路径
+String filePath = "xxx/img.png";//Displayed image path
 mDSKernel.sendFile(DSKernel.getDSDPackageName(), filePath, new ISendCallback() {
     public void onSendSuccess(long fileId) {
         show(fileId, jsonStr);//图片发送成功，显示文字内容
